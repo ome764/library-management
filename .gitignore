@@ -1,0 +1,6 @@
+# Ignore typical IDE and OS files
+*.log
+*.env
+.DS_Store
+node_modules/
+/vendor/

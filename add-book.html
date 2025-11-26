@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إضافة كتاب - مكتبتي</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3a0ca3;
+            --accent-color: #4cc9f0;
+            --success-color: #4ade80;
+            --warning-color: #f59e0b;
+            --error-color: #ef4444;
+            
+            --bg-light: #f8fafc;
+            --bg-white: #ffffff;
+            --bg-card: #ffffff;
+            --bg-hover: #f1f5f9;
+            
+            --text-dark: #1e293b;
+            --text-gray: #64748b;
+            --text-light: #94a3b8;
+            --text-white: #ffffff;
+            
+            --border-light: #e2e8f0;
+            --border-gray: #cbd5e1;
+            
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f0f4ff 0%, #f8fafc 100%);
+            color: var(--text-dark);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* أنيميشن الصفحة */
+        @keyframes pageEnter {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .page-enter {
+            animation: pageEnter 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* الهيدر المتحرك */
+        .topbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow-md);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid var(--border-light);
+            transform: translateY(0);
+            transition: all 0.3s ease;
+        }
+
+        .topbar.hidden {
+            transform: translateY(-100%);
+        }
+
+        .topbar-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            transition: all 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+            color: var(--secondary-color);
+        }
+
+        .topnav {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .topnav a {
+            color: var(--text-dark);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .topnav a::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-color);
+            transition: width 0.3s ease;
+        }
+
+        .topnav a:hover::before {
+            width: 100%;
+        }
+
+        .topnav a:hover {
+            color: var(--primary-color);
+        }
+
+        .topnav a.active {
+            background: var(--primary-color);
+            color: var(--text-white);
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .auth-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .login-btn {
+            background: transparent;
+            border: 1px solid var(--border-gray);
+            color: var(--text-dark);
+        }
+
+        .login-btn:hover {
+            background: var(--bg-hover);
+            border-color: var(--primary-color);
+            transform: translateY(-1px);
+        }
+
+        .register-btn {
+            background: var(--primary-color);
+            color: var(--text-white);
+            border: none;
+        }
+
+        .register-btn:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* المحتوى الرئيسي */
+        .main-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        /* رأس الصفحة مع أنيميشن */
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .page-title {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: titlePulse 2s ease-in-out infinite;
+        }
+
+        @keyframes titlePulse {
+            0%, 100% {
+                filter: drop-shadow(0 0 10px rgba(67, 97, 238, 0.3));
+            }
+            50% {
+                filter: drop-shadow(0 0 20px rgba(67, 97, 238, 0.6));
+            }
+        }
+
+        .page-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-gray);
+            animation: fadeInUp 0.8s ease-out 0.3s both;
+        }
+
+        /* نموذج إضافة الكتاب */
+        .form-container {
+            max-width: 700px;
+            margin: 0 auto;
+            animation: slideInUp 0.8s ease-out 0.5s both;
+        }
+
+        .form-section {
+            background: var(--bg-white);
+            padding: 3rem;
+            border-radius: 25px;
+            box-shadow: var(--shadow-xl);
+            border: 1px solid var(--border-light);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .form-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            animation: borderFlow 3s ease-in-out infinite;
+        }
+
+        @keyframes borderFlow {
+            0%, 100% {
+                transform: scaleX(0);
+                transform-origin: left;
+            }
+            50% {
+                transform: scaleX(1);
+                transform-origin: left;
+            }
+            51% {
+                transform-origin: right;
+            }
+            100% {
+                transform: scaleX(0);
+                transform-origin: right;
+            }
+        }
+
+        .form-title {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 2.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .form-title i {
+            color: var(--primary-color);
+            animation: iconBounce 2s ease-in-out infinite;
+        }
+
+        @keyframes iconBounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-5px);
+            }
+            60% {
+                transform: translateY(-3px);
+            }
+        }
+
+        .form-group {
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.75rem;
+            color: var(--text-dark);
+            font-weight: 600;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-label i {
+            color: var(--primary-color);
+            transition: all 0.3s ease;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 1.25rem 1.5rem;
+            border-radius: 15px;
+            border: 2px solid var(--border-light);
+            background: var(--bg-light);
+            color: var(--text-dark);
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.1);
+            transform: translateY(-2px);
+            background: var(--bg-white);
+        }
+
+        .form-input:focus + .input-icon {
+            color: var(--primary-color);
+            transform: scale(1.2);
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 1.5rem;
+            top: 50%;
+            transform: translateY(20%);
+            color: var(--text-light);
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
+
+        .form-group:focus-within .form-label {
+            color: var(--primary-color);
+        }
+
+        .form-group:focus-within .form-label i {
+            transform: scale(1.2);
+        }
+
+        /* زر الإرسال */
+        .submit-btn {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--text-white);
+            padding: 1.25rem 3rem;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            margin-top: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .submit-btn:hover::before {
+            left: 100%;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-xl);
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+        }
+
+        .submit-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .submit-btn i {
+            transition: transform 0.3s ease;
+        }
+
+        .submit-btn:hover i {
+            transform: scale(1.2);
+        }
+
+        /* الرسائل */
+        .message {
+            padding: 1.5rem 2rem;
+            border-radius: 15px;
+            margin: 1.5rem 0;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1.1rem;
+            animation: messageSlide 0.5s ease-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        @keyframes messageSlide {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .success {
+            background: rgba(76, 175, 80, 0.1);
+            color: var(--success-color);
+            border: 2px solid rgba(76, 175, 80, 0.2);
+        }
+
+        .error {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--error-color);
+            border: 2px solid rgba(239, 68, 68, 0.2);
+        }
+
+        /* الإجراءات */
+        .actions {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            margin-top: 3rem;
+            animation: fadeInUp 0.8s ease-out 0.7s both;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.1rem;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: var(--text-white);
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid var(--border-gray);
+            color: var(--text-dark);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        /* أنيميشن دخول */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* تأثيرات التمرير */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* التواست */
+        .toast-container {
+            position: fixed;
+            right: 2rem;
+            top: 2rem;
+            z-index: 1200;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            pointer-events: none;
+        }
+
+        .toast {
+            background: var(--bg-white);
+            color: var(--text-dark);
+            padding: 1.25rem 2rem;
+            border-radius: 15px;
+            box-shadow: var(--shadow-xl);
+            min-width: 300px;
+            pointer-events: auto;
+            transform-origin: right top;
+            animation: toastIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            border-right: 4px solid var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .toast.success {
+            border-right-color: var(--success-color);
+        }
+
+        .toast.error {
+            border-right-color: var(--error-color);
+        }
+
+        @keyframes toastIn {
+            from {
+                opacity: 0;
+                transform: translateX(30px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: none;
+            }
+        }
+
+        /* التجاوب مع الشاشات الصغيرة */
+        @media (max-width: 768px) {
+            .topbar-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .topnav {
+                gap: 0.5rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .form-section {
+                padding: 2rem;
+            }
+
+            .page-title {
+                font-size: 2.2rem;
+            }
+
+            .actions {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-container {
+                padding: 0 1rem;
+            }
+
+            .form-section {
+                padding: 1.5rem;
+            }
+
+            .form-title {
+                font-size: 1.5rem;
+            }
+
+            .form-input {
+                padding: 1rem 1.25rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- الهيدر -->
+    <header class="topbar" id="topbar">
+        <div class="topbar-content">
+            <div class="logo">
+                <i class="fas fa-book"></i>
+                <span>مكتبتي</span>
+            </div>
+            <nav class="topnav">
+                <a href="index.html">
+                    <i class="fas fa-home"></i>
+                    الرئيسية
+                </a>
+                <a href="catalog.html">
+                    <i class="fas fa-book-open"></i>
+                    الفهرس
+                </a>
+                <a href="add-book.html" class="active">
+                    <i class="fas fa-plus"></i>
+                    إضافة كتاب
+                </a>
+                <a href="dashboard.html">
+                    <i class="fas fa-chart-bar"></i>
+                    لوحة التحكم
+                </a>
+            </nav>
+            <div class="auth-buttons" id="authButtons">
+                <!-- سيتم ملؤها بالجافاسكريبت -->
+            </div>
+        </div>
+    </header>
+
+    <!-- المحتوى الرئيسي -->
+    <div class="main-container page-enter">
+        <div class="page-header">
+            <h1 class="page-title">
+                <i class="fas fa-plus-circle"></i>
+                إضافة كتاب جديد
+            </h1>
+            <p class="page-subtitle">أضف كتاب جديد إلى مكتبة الكتب</p>
+        </div>
+
+        <div class="form-container">
+            <div class="form-section">
+                <h2 class="form-title">
+                    <i class="fas fa-book-medical"></i>
+                    معلومات الكتاب
+                </h2>
+                <form id="addBookForm">
+                    <div class="form-group">
+                        <label for="title" class="form-label">
+                            <i class="fas fa-book"></i>
+                            عنوان الكتاب *
+                        </label>
+                        <input type="text" id="title" name="title" required placeholder="أدخل عنوان الكتاب">
+                        <i class="fas fa-pen input-icon"></i>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="author" class="form-label">
+                            <i class="fas fa-user-edit"></i>
+                            اسم المؤلف *
+                        </label>
+                        <input type="text" id="author" name="author" required placeholder="أدخل اسم المؤلف">
+                        <i class="fas fa-user input-icon"></i>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="category" class="form-label">
+                            <i class="fas fa-folder"></i>
+                            التصنيف *
+                        </label>
+                        <input type="text" id="category" name="category" required value="عام" placeholder="أدخل تصنيف الكتاب">
+                        <i class="fas fa-tag input-icon"></i>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="year" class="form-label">
+                            <i class="fas fa-calendar"></i>
+                            سنة النشر *
+                        </label>
+                        <input type="number" id="year" name="year" min="1000" max="2030" required value="2024" placeholder="سنة النشر">
+                        <i class="fas fa-calendar-alt input-icon"></i>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description" class="form-label">
+                            <i class="fas fa-align-left"></i>
+                            الوصف
+                        </label>
+                        <textarea id="description" name="description" class="form-input" rows="4" placeholder="أدخل وصفاً مختصراً للكتاب"></textarea>
+                        <i class="fas fa-align-left input-icon" style="top: 2rem;"></i>
+                    </div>
+                    
+                    <button type="submit" class="submit-btn" id="submitBtn">
+                        <i class="fas fa-plus-circle"></i>
+                        إضافة الكتاب إلى المكتبة
+                    </button>
+                </form>
+                
+                <div id="message"></div>
+            </div>
+        </div>
+
+        <div class="actions">
+            <a href="catalog.html" class="btn btn-secondary">
+                <i class="fas fa-arrow-right"></i>
+                العودة للفهرس
+            </a>
+            <a href="index.html" class="btn btn-primary">
+                <i class="fas fa-home"></i>
+                الصفحة الرئيسية
+            </a>
+        </div>
+    </div>
+
+    <!-- التواست -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>
+        // إدارة حالة المستخدم
+        async function loadAuthButtons() {
+            const authButtons = document.getElementById('authButtons');
+            
+            try {
+                const response = await fetch('php/session.php');
+                const data = await response.json();
+                
+                if (data.status === 'ok' && data.user) {
+                    authButtons.innerHTML = `
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <span style="color: var(--text-dark);">مرحباً، ${data.user.name}</span>
+                            <a href="php/logout.php" class="auth-btn login-btn">
+                                <i class="fas fa-sign-out-alt"></i>
+                                تسجيل الخروج
+                            </a>
+                        </div>
+                    `;
+                } else {
+                    authButtons.innerHTML = `
+                        <a href="login.html" class="auth-btn login-btn">
+                            <i class="fas fa-sign-in-alt"></i>
+                            تسجيل الدخول
+                        </a>
+                        <a href="register.html" class="auth-btn register-btn">
+                            <i class="fas fa-user-plus"></i>
+                            إنشاء حساب
+                        </a>
+                    `;
+                }
+            } catch (error) {
+                authButtons.innerHTML = `
+                    <a href="login.html" class="auth-btn login-btn">
+                        <i class="fas fa-sign-in-alt"></i>
+                        تسجيل الدخول
+                    </a>
+                    <a href="register.html" class="auth-btn register-btn">
+                        <i class="fas fa-user-plus"></i>
+                        إنشاء حساب
+                    </a>
+                `;
+            }
+        }
+
+        // إضافة كتاب
+        document.getElementById('addBookForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const messageDiv = document.getElementById('message');
+            
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري إضافة الكتاب...';
+            messageDiv.innerHTML = '';
+            
+            const formData = new FormData(this);
+            const data = {
+                title: formData.get('title'),
+                author: formData.get('author'),
+                category: formData.get('category'),
+                year: parseInt(formData.get('year')),
+                description: formData.get('description')
+            };
+            
+            try {
+                // محاكاة اتصال بالخادم
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                
+                // محاكاة نتيجة ناجحة
+                const result = { 
+                    status: 'success',
+                    message: 'تم إضافة الكتاب بنجاح إلى المكتبة!'
+                };
+                
+                if (result.status === 'success') {
+                    showToast(result.message, 'success');
+                    messageDiv.innerHTML = `
+                        <div class="message success">
+                            <i class="fas fa-check-circle"></i>
+                            ${result.message}
+                        </div>
+                    `;
+                    
+                    // إعادة تعيين النموذج مع تأثير
+                    this.style.transform = 'scale(0.98)';
+                    setTimeout(() => {
+                        this.reset();
+                        this.style.transform = 'scale(1)';
+                    }, 300);
+                    
+                    // تأثير نجاح
+                    const formSection = document.querySelector('.form-section');
+                    formSection.style.animation = 'successPulse 0.6s ease';
+                    setTimeout(() => {
+                        formSection.style.animation = '';
+                    }, 600);
+                    
+                } else {
+                    showToast(result.message, 'error');
+                    messageDiv.innerHTML = `
+                        <div class="message error">
+                            <i class="fas fa-exclamation-circle"></i>
+                            ${result.message}
+                        </div>
+                    `;
+                }
+                
+            } catch (error) {
+                showToast('خطأ في الاتصال بالخادم', 'error');
+                messageDiv.innerHTML = `
+                    <div class="message error">
+                        <i class="fas fa-exclamation-circle"></i>
+                        ❌ خطأ في الاتصال: ${error.message}
+                    </div>
+                `;
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-plus-circle"></i> إضافة الكتاب إلى المكتبة';
+            }
+        });
+
+        // إدارة التمرير
+        let lastScrollTop = 0;
+        const topbar = document.getElementById('topbar');
+
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            
+            // إخفاء/إظهار الهيدر
+            if (scrollTop > lastScrollTop && scrollTop > 100) {
+                topbar.classList.add('hidden');
+            } else {
+                topbar.classList.remove('hidden');
+            }
+            lastScrollTop = scrollTop;
+            
+            // تأثيرات الظهور عند التمرير
+            handleScrollAnimations();
+        });
+
+        // تأثيرات الظهور عند التمرير
+        function handleScrollAnimations() {
+            const elements = document.querySelectorAll('.fade-in');
+            elements.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                const elementVisible = 150;
+                
+                if (elementTop < window.innerHeight - elementVisible) {
+                    element.classList.add('visible');
+                }
+            });
+        }
+
+        // التواست
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            
+            const icons = {
+                success: 'fas fa-check-circle',
+                error: 'fas fa-exclamation-circle'
+            };
+            
+            const colors = {
+                success: '#4ade80',
+                error: '#ef4444'
+            };
+            
+            toast.innerHTML = `
+                <i class="${icons[type]}" style="color: ${colors[type]};"></i>
+                <div>${message}</div>
+            `;
+            container.appendChild(toast);
+            
+            // أنيميشن الدخول
+            setTimeout(() => {
+                toast.style.transition = 'all 0.3s ease';
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(30px)';
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+
+        // تأثيرات تفاعلية للحقول
+        document.querySelectorAll('.form-input').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.classList.add('focused');
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.classList.remove('focused');
+            });
+        });
+
+        // تأثيرات عند تحميل الصفحة
+        document.addEventListener('DOMContentLoaded', function() {
+            loadAuthButtons();
+            
+            // إضافة تأثيرات الظهور
+            const elements = document.querySelectorAll('.form-group, .actions');
+            elements.forEach((element, index) => {
+                element.classList.add('fade-in');
+                element.style.animationDelay = `${index * 0.1}s`;
+            });
+            
+            handleScrollAnimations();
+            
+            // تأثير اهتزاز للنموذج عند التحميل
+            const formSection = document.querySelector('.form-section');
+            setTimeout(() => {
+                formSection.style.transform = 'scale(1.02)';
+                setTimeout(() => {
+                    formSection.style.transform = 'scale(1)';
+                }, 300);
+            }, 1000);
+        });
+
+        // تأثيرات عند مغادرة الصفحة
+        window.addEventListener('beforeunload', function() {
+            document.body.style.opacity = '0';
+            document.body.style.transition = 'opacity 0.3s ease';
+        });
+    </script>
+</body>
+</html>

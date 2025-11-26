@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تفاصيل الكتاب - مكتبتي</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3a0ca3;
+            --accent-color: #4cc9f0;
+            --success-color: #4ade80;
+            --warning-color: #f59e0b;
+            --error-color: #ef4444;
+            
+            --bg-light: #f8fafc;
+            --bg-white: #ffffff;
+            --bg-card: #ffffff;
+            --bg-hover: #f1f5f9;
+            
+            --text-dark: #1e293b;
+            --text-gray: #64748b;
+            --text-light: #94a3b8;
+            --text-white: #ffffff;
+            
+            --border-light: #e2e8f0;
+            --border-gray: #cbd5e1;
+            
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f0f4ff 0%, #f8fafc 100%);
+            color: var(--text-dark);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* أنيميشن الصفحة */
+        @keyframes pageEnter {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .page-enter {
+            animation: pageEnter 0.8s ease-out;
+        }
+
+        /* الهيدر المتحرك */
+        .topbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow-md);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid var(--border-light);
+            transform: translateY(0);
+            transition: all 0.3s ease;
+        }
+
+        .topbar.hidden {
+            transform: translateY(-100%);
+        }
+
+        .topbar-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            transition: all 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+            color: var(--secondary-color);
+        }
+
+        .topnav {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .topnav a {
+            color: var(--text-dark);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .topnav a::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-color);
+            transition: width 0.3s ease;
+        }
+
+        .topnav a:hover::before {
+            width: 100%;
+        }
+
+        .topnav a:hover {
+            color: var(--primary-color);
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .auth-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .login-btn {
+            background: transparent;
+            border: 1px solid var(--border-gray);
+            color: var(--text-dark);
+        }
+
+        .login-btn:hover {
+            background: var(--bg-hover);
+            border-color: var(--primary-color);
+            transform: translateY(-1px);
+        }
+
+        .register-btn {
+            background: var(--primary-color);
+            color: var(--text-white);
+            border: none;
+        }
+
+        .register-btn:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* المحتوى الرئيسي */
+        .main-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        /* تفاصيل الكتاب */
+        .book-detail-container {
+            animation: slideInUp 0.8s ease-out 0.3s both;
+        }
+
+        .book-detail {
+            background: var(--bg-white);
+            border-radius: 25px;
+            padding: 3rem;
+            box-shadow: var(--shadow-xl);
+            border: 1px solid var(--border-light);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .book-detail::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            animation: borderFlow 3s ease-in-out infinite;
+        }
+
+        @keyframes borderFlow {
+            0%, 100% {
+                transform: scaleX(0);
+                transform-origin: left;
+            }
+            50% {
+                transform: scaleX(1);
+                transform-origin: left;
+            }
+            51% {
+                transform-origin: right;
+            }
+            100% {
+                transform: scaleX(0);
+                transform-origin: right;
+            }
+        }
+
+        .book-header {
+            display: flex;
+            gap: 3rem;
+            margin-bottom: 2.5rem;
+            align-items: flex-start;
+        }
+
+        .book-cover {
+            width: 250px;
+            height: 350px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-white);
+            font-size: 4rem;
+            box-shadow: var(--shadow-lg);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .book-cover::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: rotate(45deg);
+            transition: all 0.6s ease;
+        }
+
+        .book-cover:hover::before {
+            transform: rotate(45deg) translate(50%, 50%);
+        }
+
+        .book-cover:hover {
+            transform: translateY(-5px) rotate(2deg);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .book-info {
+            flex: 1;
+        }
+
+        .book-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+            line-height: 1.2;
+            background: linear-gradient(135deg, var(--text-dark), var(--primary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: titleGlow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes titleGlow {
+            from {
+                filter: drop-shadow(0 0 10px rgba(67, 97, 238, 0.3));
+            }
+            to {
+                filter: drop-shadow(0 0 20px rgba(67, 97, 238, 0.6));
+            }
+        }
+
+        .book-author {
+            font-size: 1.6rem;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .book-author:hover {
+            transform: translateX(10px);
+        }
+
+        .book-meta-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .meta-item {
+            background: var(--bg-light);
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .meta-item:hover {
+            background: var(--bg-white);
+            border-color: var(--primary-color);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .meta-icon {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 0.75rem;
+        }
+
+        .meta-label {
+            color: var(--text-gray);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .meta-value {
+            color: var(--text-dark);
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .book-description {
+            color: var(--text-gray);
+            line-height: 1.8;
+            font-size: 1.1rem;
+            margin-bottom: 2.5rem;
+            padding: 2rem;
+            background: var(--bg-light);
+            border-radius: 15px;
+            border-right: 4px solid var(--primary-color);
+            animation: fadeIn 1s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .book-actions {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 2.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1.25rem 2.5rem;
+            border-radius: 15px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 1.1rem;
+            border: none;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--text-white);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-xl);
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid var(--border-gray);
+            color: var(--text-dark);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            transform: translateY(-3px);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* التقييم */
+        .rating-section {
+            background: var(--bg-light);
+            padding: 2rem;
+            border-radius: 20px;
+            margin: 2rem 0;
+            animation: slideInUp 0.8s ease-out 0.5s both;
+        }
+
+        .rating-stars {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            justify-content: center;
+        }
+
+        .star {
+            font-size: 2rem;
+            color: var(--border-gray);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .star:hover,
+        .star.active {
+            color: var(--warning-color);
+            transform: scale(1.2);
+        }
+
+        .star:hover ~ .star {
+            color: var(--border-gray);
+            transform: scale(1);
+        }
+
+        /* التوصيات */
+        .recommendations {
+            margin-top: 3rem;
+            animation: slideInUp 0.8s ease-out 0.7s both;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .books-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .book-card {
+            background: var(--bg-white);
+            border: 1px solid var(--border-light);
+            border-radius: 20px;
+            padding: 1.5rem;
+            transition: all 0.4s ease;
+            box-shadow: var(--shadow-sm);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .book-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+        }
+
+        .book-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .book-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* حالات التحميل */
+        .loading {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-gray);
+            font-size: 1.2rem;
+        }
+
+        .loading::after {
+            content: '...';
+            animation: dots 1.5s steps(4, end) infinite;
+        }
+
+        @keyframes dots {
+            0%, 20% { color: rgba(0,0,0,0); text-shadow: .25em 0 0 rgba(0,0,0,0), .5em 0 0 rgba(0,0,0,0); }
+            40% { color: var(--text-gray); text-shadow: .25em 0 0 rgba(0,0,0,0), .5em 0 0 rgba(0,0,0,0); }
+            60% { text-shadow: .25em 0 0 var(--text-gray), .5em 0 0 rgba(0,0,0,0); }
+            80%, 100% { text-shadow: .25em 0 0 var(--text-gray), .5em 0 0 var(--text-gray); }
+        }
+
+        .error {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--error-color);
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        /* أنيميشن دخول */
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* التجاوب مع الشاشات الصغيرة */
+        @media (max-width: 768px) {
+            .topbar-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .book-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 2rem;
+            }
+
+            .book-cover {
+                align-self: center;
+            }
+
+            .book-title {
+                font-size: 2.2rem;
+            }
+
+            .book-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+
+            .book-meta-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-container {
+                padding: 0 1rem;
+            }
+
+            .book-detail {
+                padding: 2rem;
+            }
+
+            .book-title {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- الهيدر -->
+    <header class="topbar" id="topbar">
+        <div class="topbar-content">
+            <div class="logo">
+                <i class="fas fa-book"></i>
+                <span>مكتبتي</span>
+            </div>
+            <nav class="topnav">
+                <a href="index.html">
+                    <i class="fas fa-home"></i>
+                    الرئيسية
+                </a>
+                <a href="catalog.html">
+                    <i class="fas fa-book-open"></i>
+                    الفهرس
+                </a>
+                <a href="add-book.html">
+                    <i class="fas fa-plus"></i>
+                    إضافة كتاب
+                </a>
+                <a href="dashboard.html">
+                    <i class="fas fa-chart-bar"></i>
+                    لوحة التحكم
+                </a>
+            </nav>
+            <div class="auth-buttons" id="authButtons">
+                <!-- سيتم ملؤها بالجافاسكريبت -->
+            </div>
+        </div>
+    </header>
+
+    <!-- المحتوى الرئيسي -->
+    <div class="main-container page-enter">
+        <div id="bookContent">
+            <div class="loading">جاري تحميل تفاصيل الكتاب</div>
+        </div>
+
+        <!-- التوصيات -->
+        <div class="recommendations" id="recommendations" style="display: none;">
+            <h2 class="section-title">كتب مشابهة</h2>
+            <div class="books-grid" id="similarBooks">
+                <!-- سيتم ملؤها بالجافاسكريبت -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // إدارة حالة المستخدم
+        async function loadAuthButtons() {
+            const authButtons = document.getElementById('authButtons');
+            
+            try {
+                const response = await fetch('php/session.php');
+                const data = await response.json();
+                
+                if (data.status === 'ok' && data.user) {
+                    authButtons.innerHTML = `
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <span style="color: var(--text-dark);">مرحباً، ${data.user.name}</span>
+                            <a href="php/logout.php" class="auth-btn login-btn">
+                                <i class="fas fa-sign-out-alt"></i>
+                                تسجيل الخروج
+                            </a>
+                        </div>
+                    `;
+                } else {
+                    authButtons.innerHTML = `
+                        <a href="login.html" class="auth-btn login-btn">
+                            <i class="fas fa-sign-in-alt"></i>
+                            تسجيل الدخول
+                        </a>
+                        <a href="register.html" class="auth-btn register-btn">
+                            <i class="fas fa-user-plus"></i>
+                            إنشاء حساب
+                        </a>
+                    `;
+                }
+            } catch (error) {
+                authButtons.innerHTML = `
+                    <a href="login.html" class="auth-btn login-btn">
+                        <i class="fas fa-sign-in-alt"></i>
+                        تسجيل الدخول
+                    </a>
+                    <a href="register.html" class="auth-btn register-btn">
+                        <i class="fas fa-user-plus"></i>
+                        إنشاء حساب
+                    </a>
+                `;
+            }
+        }
+
+        // تحميل تفاصيل الكتاب
+        async function loadBookDetails() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const bookId = urlParams.get('id');
+            const container = document.getElementById('bookContent');
+
+            if (!bookId) {
+                container.innerHTML = `
+                    <div class="error">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h3>لم يتم تحديد كتاب</h3>
+                        <p>يرجى اختيار كتاب من الفهرس</p>
+                    </div>
+                `;
+                return;
+            }
+
+            try {
+                // محاكاة بيانات الكتاب
+                const book = {
+                    id: bookId,
+                    title: "العادات الذرية",
+                    author: "جيمس كلير",
+                    category: "تطوير الذات",
+                    year: 2022,
+                    description: "كتاب رائع يشرح كيفية بناء عادات صغيرة تؤدي إلى تغييرات كبيرة في الحياة. يقدم استراتيجيات عملية لتطوير عادات جيدة والتخلص من العادات السيئة.",
+                    copies_available: 3,
+                    copies_total: 5,
+                    isbn: "978-603-03-4567-8"
+                };
+
+                displayBook(book);
+                loadSimilarBooks(book.category);
+                
+            } catch (error) {
+                container.innerHTML = `
+                    <div class="error">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h3>❌ خطأ في تحميل الكتاب</h3>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        function displayBook(book) {
+            const container = document.getElementById('bookContent');
+            const price = Math.floor(Math.random() * 200) + 20;
+            const isAvailable = book.copies_available > 0;
+            const rating = 4.5;
+
+            container.innerHTML = `
+                <div class="book-detail-container">
+                    <div class="book-detail">
+                        <div class="book-header">
+                            <div class="book-cover">
+                                <i class="fas fa-book"></i>
+                            </div>
+                            <div class="book-info">
+                                <h1 class="book-title">${escapeHtml(book.title)}</h1>
+                                <div class="book-author">
+                                    <i class="fas fa-user-edit"></i>
+                                    ${escapeHtml(book.author || 'غير معروف')}
+                                </div>
+                                
+                                <div class="book-meta-grid">
+                                    <div class="meta-item">
+                                        <div class="meta-icon">
+                                            <i class="fas fa-folder"></i>
+                                        </div>
+                                        <div class="meta-label">التصنيف</div>
+                                        <div class="meta-value">${escapeHtml(book.category || 'عام')}</div>
+                                    </div>
+                                    
+                                    <div class="meta-item">
+                                        <div class="meta-icon">
+                                            <i class="fas fa-calendar"></i>
+                                        </div>
+                                        <div class="meta-label">سنة النشر</div>
+                                        <div class="meta-value">${book.year || 'غير محدد'}</div>
+                                    </div>
+                                    
+                                    <div class="meta-item">
+                                        <div class="meta-icon">
+                                            <i class="fas fa-copy"></i>
+                                        </div>
+                                        <div class="meta-label">النسخ المتاحة</div>
+                                        <div class="meta-value">${book.copies_available} / ${book.copies_total}</div>
+                                    </div>
+                                    
+                                    <div class="meta-item">
+                                        <div class="meta-icon">
+                                            <i class="fas fa-tag"></i>
+                                        </div>
+                                        <div class="meta-label">السعر</div>
+                                        <div class="meta-value">${price} جنيه</div>
+                                    </div>
+                                </div>
+
+                                ${book.isbn ? `
+                                    <div class="meta-item">
+                                        <div class="meta-icon">
+                                            <i class="fas fa-barcode"></i>
+                                        </div>
+                                        <div class="meta-label">الرقم الدولي</div>
+                                        <div class="meta-value">${book.isbn}</div>
+                                    </div>
+                                ` : ''}
+                                
+                                <div class="book-description">
+                                    ${escapeHtml(book.description || 'لا يوجد وصف متاح لهذا الكتاب.')}
+                                </div>
+                                
+                                <div class="book-actions">
+                                    <button class="btn btn-primary" onclick="addToCart(${JSON.stringify(book).replace(/"/g, '&quot;')}, ${price})" 
+                                            ${!isAvailable ? 'disabled' : ''}>
+                                        <i class="fas fa-cart-plus"></i>
+                                        إضافة إلى السلة
+                                    </button>
+                                    <a href="catalog.html" class="btn btn-secondary">
+                                        <i class="fas fa-arrow-right"></i>
+                                        العودة للفهرس
+                                    </a>
+                                    <button class="btn btn-secondary" onclick="toggleWishlist(${book.id})">
+                                        <i class="fas fa-heart"></i>
+                                        المفضلة
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // تحميل كتب مشابهة
+        async function loadSimilarBooks(category) {
+            const container = document.getElementById('similarBooks');
+            const section = document.getElementById('recommendations');
+            
+            try {
+                // محاكاة بيانات كتب مشابهة
+                const similarBooks = [
+                    {
+                        id: 2,
+                        title: "قوة العادات",
+                        author: "تشارلز دوهيغ",
+                        category: category,
+                        year: 2021,
+                        copies_available: 2
+                    },
+                    {
+                        id: 3,
+                        title: "الطريق إلى النجاح",
+                        author: "ستيفن كوفي",
+                        category: category,
+                        year: 2020,
+                        copies_available: 4
+                    },
+                    {
+                        id: 4,
+                        title: "فن الإنتاجية",
+                        author: "ديفيد ألين",
+                        category: category,
+                        year: 2023,
+                        copies_available: 1
+                    }
+                ];
+
+                let html = '';
+                similarBooks.forEach(book => {
+                    const price = Math.floor(Math.random() * 200) + 20;
+                    html += `
+                        <div class="book-card">
+                            <div class="book-title">${escapeHtml(book.title)}</div>
+                            <div class="book-author">
+                                <i class="fas fa-user-edit"></i>
+                                ${escapeHtml(book.author)}
+                            </div>
+                            <div class="book-meta">
+                                <span class="book-category">${escapeHtml(book.category)}</span>
+                                <span class="book-year">${book.year}</span>
+                            </div>
+                            <div class="book-price">${price} جنيه</div>
+                            <div class="book-availability">
+                                <a href="book.html?id=${book.id}" class="view-btn">
+                                    <i class="fas fa-eye"></i>
+                                    عرض
+                                </a>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                container.innerHTML = html;
+                section.style.display = 'block';
+                
+            } catch (error) {
+                console.error('Error loading similar books:', error);
+            }
+        }
+
+        // إدارة التمرير
+        let lastScrollTop = 0;
+        const topbar = document.getElementById('topbar');
+
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            
+            if (scrollTop > lastScrollTop && scrollTop > 100) {
+                topbar.classList.add('hidden');
+            } else {
+                topbar.classList.remove('hidden');
+            }
+            lastScrollTop = scrollTop;
+        });
+
+        // وظائف مساعدة
+        function addToCart(book, price) {
+            // محاكاة إضافة إلى السلة
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                top: 100px;
+                right: 30px;
+                background: var(--success-color);
+                color: white;
+                padding: 1rem 2rem;
+                border-radius: 10px;
+                box-shadow: var(--shadow-lg);
+                z-index: 1000;
+                animation: slideInRight 0.5s ease;
+            `;
+            toast.innerHTML = `<i class="fas fa-check"></i> تمت إضافة "${book.title}" إلى السلة`;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'slideOutRight 0.5s ease';
+                setTimeout(() => toast.remove(), 500);
+            }, 3000);
+        }
+
+        function toggleWishlist(bookId) {
+            // محاكاة إضافة إلى المفضلة
+            const heart = event.target.closest('button').querySelector('i');
+            heart.classList.toggle('fas');
+            heart.classList.toggle('far');
+            
+            if (heart.classList.contains('fas')) {
+                heart.style.color = 'var(--error-color)';
+                heart.style.animation = 'heartBeat 0.6s ease';
+                setTimeout(() => heart.style.animation = '', 600);
+            } else {
+                heart.style.color = '';
+            }
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // التهيئة
+        document.addEventListener('DOMContentLoaded', function() {
+            loadAuthButtons();
+            loadBookDetails();
+        });
+    </script>
+</body>
+</html>
